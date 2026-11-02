@@ -1,0 +1,3 @@
+export const ANUNCIO_REPOSITORY = Symbol(
+    "ANUNCIO_REPOSITORY"
+)

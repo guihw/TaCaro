@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model anuncio {
+  id           BigInt   @id
+  produto_id   BigInt?
+  preco        Decimal? @db.Decimal
+  link_anuncio String?
+  marketplace  String?  @db.VarChar(255)
+  produto      produto? @relation(fields: [produto_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  images       images[]
+}
+
+model categoria {
+  id             BigInt         @id
+  nome_categoria String         @db.VarChar(255)
+  subcategoria   subcategoria[]
+}
+
+model images {
+  id         BigInt  @id
+  is_main    Boolean
+  anuncio_id BigInt
+  url        String
+  anuncio    anuncio @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model produto {
+  id              BigInt       @id
+  titulo          String       @db.VarChar(255)
+  especificacoes  String
+  subcategoria_id BigInt
+  anuncio         anuncio[]
+  subcategoria    subcategoria @relation(fields: [subcategoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vendas          vendas[]
+}
+
+model subcategoria {
+  id                BigInt     @id
+  nome_subcategoria String     @db.VarChar(255)
+  categoria_id      BigInt?
+  produto           produto[]
+  categoria         categoria? @relation(fields: [categoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model vendas {
+  id                BigInt    @id @default(autoincrement())
+  produto_id        BigInt?
+  quantidadevendida Int?
+  vendarealizadaem  DateTime? @db.Date
+  valor             Decimal?  @db.Decimal
+  produto           produto?  @relation(fields: [produto_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
