@@ -3,6 +3,7 @@ import { AnuncioRepository } from "../../Application/ports/anuncio-repository.js
 import { Anuncio } from "../../Domain/anuncio.js";
 import { PrismaClient } from "../../../../generated/prisma/client.js";
 import { PrismaService } from "../../../../database/prisma.service.js";
+import { AnuncioMapper} from "../mappers/anuncio.mapper.js";
 
 @Injectable()
 export class PrismaAnuncioRepository implements AnuncioRepository{
@@ -11,9 +12,8 @@ export class PrismaAnuncioRepository implements AnuncioRepository{
     ){}
 
     async findAll(): Promise<Anuncio[]> {
-        const anuncios = await this.prisma.anuncio.findMany();
+        const anuncios = await this.prisma.anuncio.findMany({include: {images: true}});
 
-        return anuncios;
-        //return anuncios.map(anuncio => )
+        return anuncios.map(anuncio => AnuncioMapper.mapToDomain(anuncio));
     }
 }
