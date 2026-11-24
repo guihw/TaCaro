@@ -11,7 +11,10 @@ export class PrismaProdutoRepository implements ProdutoRepository{
         const produtos = await this.prisma.produto.findMany({include: 
             { 
                 subcategoria: {
-                    include: { categoria: true}
+                    include: { categoria: true }
+                },
+                anuncio: {
+                    include: { images: true }
                 }
             }});
 
